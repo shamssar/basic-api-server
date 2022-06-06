@@ -1,50 +1,46 @@
-'use strict';
-const express = require('express');
+"use strict";
+const express = require("express");
+const { Clothes } = require("../models/index.models");
+const ClothesRouter = express.Router();
 
-const { Clothe } = require('../models/clothes.models');
-
-const clothesRouter = express.Router();
-
-//add routes here
-clothesRouter.get('/clothe', getClothes);
-clothesRouter.get('/clothe/:id', getOneClothe);
-clothesRouter.post('/clothe', addClothe);
-clothesRouter.put('/clothe/:id', updateClothe);
-clothesRouter.delete('/clothe/:id', deleteClothe);
-
+ClothesRouter.get("/clothes", getClothes);
+ClothesRouter.get("/clothes/:id", getOneClothes);
+ClothesRouter.post("/clothes", createClothes);
+ClothesRouter.put("/clothes/:id", updateClothes);
+ClothesRouter.delete("/clothes/:id", deleteClothes);
 async function getClothes(req, res) {
-  const clothes = await Clothe.findAll();
-  res.status(200).json(clothes);
+  const allClothes = await Clothes.findAll();
+  res.status(200).json(allClothes);
 }
-async function getOneClothe(req, res) {
-  const clotheId = parseInt(req.params.id);
-  const clothe = await Clothe.findOne({ where: { id: clotheId } });
-  res.status(200).json(clothe);
+
+async function getOneClothes(req, res) {
+  const clothes_id = parseInt(req.params.id);
+  let clothesName = await Clothes.findOne({ where: { id: clothes_id } });
+  res.status(200).json(clothesName);
 }
-async function addClothe(req, res) {
-  const newClothe = req.body;
-  const clothe = await Clothe.create(newClothe);
-  res.status(201).json(clothe);
+
+async function createClothes(req, res) {
+  let newClothes = req.body;
+  let clothes = await Clothes.create(newClothes);
+  res.status(201).json(clothes);
 }
-async function updateClothe(req, res) {
-  const clotheId = parseInt(req.params.id);
-  const updateClothe = req.body;
-  const foundClothe = await Clothe.findOne({ where: { id: clotheId } });
-  if (foundClothe) {
-    const updatedClothe = await foundClothe.update(updateClothe);
-    res.status(201).json(updatedClothe);
+
+async function updateClothes(req, res) {
+  let clothes_id = parseInt(req.params.id);
+  let updateClothes = req.body;
+  let foundClothes = await Clothes.findOne({ where: { id: clothes_id } });
+  if (foundClothes) {
+
+    let updatedClothes = await foundClothes.update(updateClothes);
+    res.status(201).json(updatedClothes);
   } else {
-    res.status(404).json({ message: 'clothe not found' });
+    res.status(404);
   }
 }
-async function deleteClothe(req, res) {
-  const clotheId = parseInt(req.params.id);
-  const foundClothe = await Clothe.findOne({ where: { id: clotheId } });
-  if (foundClothe) {
-    await foundClothe.destroy();
-    res.status(204).json({ message: 'clothe deleted' });
-  } else {
-    res.status(404).json({ message: 'clothe not found' });
-  }
+
+async function deleteClothes(req, res) {
+  let clothes_id = parseInt(req.params.id);
+  let deleteClothes = await Clothes.destroy({ where: { id: clothes_id } });
+  res.status(204).json(deleteClothes);
 }
-module.exports = clothesRouter;
+module.exports = ClothesRouter;

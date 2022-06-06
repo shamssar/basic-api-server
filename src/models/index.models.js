@@ -13,7 +13,8 @@ let sequelizeOptions =
     process.env.NODE_ENV === "production"
         ?
         {
-
+            dialect: 'postgres',
+            protocol: 'postgres',
             dialectOptions: {
                 ssl: {
                     require: true,
